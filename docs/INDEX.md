@@ -22,6 +22,14 @@ updated: 2026-09-13
 | [0004](adr/0004-v1-is-read-only.md) | V1 writes to no repository. Anything that would write is offered as a command to copy. |
 | [0005](adr/0005-uv-over-poetry.md) | uv manages the interpreter, the dependencies and the packaging, breaking with Poetry on purpose. |
 
+## Instructions
+
+| Document | What it is |
+|---|---|
+| [../AGENTS.md](../AGENTS.md) | The only source of working instructions: language, stack, the hard rules, what is out of scope for V1, and how a change is carried out. |
+| [../CLAUDE.md](../CLAUDE.md) | One line, importing `AGENTS.md`, so Claude Code and any other agent read the same file. |
+| [../IDEAS.md](../IDEAS.md) | The inbox: dated ideas with no commitment, deleted from it once they become a change. |
+
 ## Where each kind of knowledge belongs
 
 Keeping these apart is what stops documents from contradicting each other. One
