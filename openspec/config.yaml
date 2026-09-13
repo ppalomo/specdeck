@@ -1,9 +1,76 @@
 schema: spec-driven
 
 context: |
-  Language: es
-  All artifacts must be written in es.
-  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+  ## Language
+
+  Write all OpenSpec artifacts in Spanish. Keep structural headings and the
+  SHALL/MUST keywords in English.
+
+  Everything else in this repository is English: code, comments, file names,
+  commit messages and user interface strings. The interface is English only;
+  never add an i18n layer.
+
+  ## What Specdeck is
+
+  A local web dashboard that reads the `openspec/` directory of several
+  registered repositories at once and renders their changes, specs, tasks and
+  validation state, refreshed live from disk. It replaces `openspec view` with
+  something visual and multi-repo. It runs on 127.0.0.1 and talks to no cloud.
+
+  ## Stack (decided, not open)
+
+  Server: Python 3.13, FastAPI, uvicorn, Pydantic v2, watchfiles,
+  markdown-it-py, Typer; managed with uv.
+  Web: React 19, Vite, TypeScript, TanStack Router and Query, Tailwind v4,
+  shadcn/ui, Framer Motion; managed with pnpm.
+  Contracts: Pydantic models produce FastAPI's OpenAPI document, from which the
+  TypeScript types are generated. Never hand-write an API type.
+  Quality: ruff, pyright, pytest with pytest-asyncio, Vitest, Playwright.
+
+  Proposing a different library is fine. Proposing a different stack reopens a
+  closed decision and needs a reason the ADRs do not already answer.
+
+  ## Principles
+
+  1. V1 never writes to a registered repository: not a file, not a checkbox,
+     not a command that would. The only path Specdeck writes to is
+     ~/.config/specdeck/. Anything that would write is offered to the user as a
+     command to copy.
+  2. The files are the truth. There is no database; everything held in memory is
+     a cache derived from disk and invalidated by the watcher.
+  3. The CLI is authoritative. Canonical state comes from `openspec ... --json`,
+     parsed into Pydantic models with extra='ignore'. Never reimplement
+     OpenSpec's rules.
+  4. Parse in process only to render. In-process parsing of tasks.md and spec.md
+     exists because spawning the CLI costs 150-300 ms; it never decides what is
+     valid or what status an artifact has.
+  5. Local first. One asyncio process listening on 127.0.0.1.
+  6. Secure by construction. Allowlisted read-only commands, argument lists and
+     never a shell, paths resolved and confined to registered roots.
+  7. Design is a requirement, not a finish. Empty and error states are designed,
+     nothing flickers on refresh, no view scrolls horizontally.
+
+  ## V1 scope
+
+  In: manual registration of roots by path, indexing and parsing, the read-only
+  UI (dashboard, repo, change, spec, archive timeline), live refresh over
+  WebSocket, and the read-only command allowlist (status, list, show, validate,
+  doctor, instructions) plus opening the editor at a given line.
+
+  Out, and not to be smuggled into a proposal however small it looks: writing to
+  repositories, ticking tasks, creating or archiving changes, automatic
+  repository discovery, OpenSpec stores beyond registering one by path, a
+  markdown editor, an embedded terminal, and worksets. These are V2.
+
+  ## Conduct
+
+  When a requirement or a task is ambiguous, write
+  `[NEEDS CLARIFICATION: the question]` and stop. Never invent a decision, and
+  never state that work is done without having run it.
+
+  Use the vocabulary of docs/glossary.md for capabilities, requirements,
+  endpoints and code identifiers. Read docs/adr/ before reopening a decision.
+  Working rules live in AGENTS.md.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
