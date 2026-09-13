@@ -11,5 +11,33 @@
         "url": "https://github.com/ppalomo/dotclaude.git"
       }
     }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(openspec *)",
+      "Bash(uv run *)",
+      "Bash(uv sync*)",
+      "Bash(pnpm *)",
+      "Bash(make *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(openspec new change *)",
+            "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/branch-on-new-change.sh\"",
+            "statusMessage": "Creating a branch for the change...",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
   }
 }
