@@ -76,7 +76,10 @@ V2. A proposal that includes one of them is out of scope, however small it looks
 ## Ideas
 
 When the user says "apunta esto", "idea:" or otherwise hands over something that is not the
-current task, add a dated entry at the top of [IDEAS.md](IDEAS.md), implement nothing, and
-return to the task in progress. Never turn an idea into an OpenSpec change directly: ideas
-reach OpenSpec through `/opsx:explore` and `/opsx:propose`, and the entry is deleted from
+current task, add a dated entry at the top of `IDEAS.md`, implement nothing, and return to
+the task in progress. Never turn an idea into an OpenSpec change directly: ideas reach
+OpenSpec through `/opsx:explore` and `/opsx:propose`, and the entry is deleted from
 `IDEAS.md` when its change is proposed.
+
+`IDEAS.md` lives in the repository root and is **deliberately untracked**: an inbox is raw
+material, and this repository is public. Create it if it is not there.

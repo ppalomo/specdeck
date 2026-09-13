@@ -89,7 +89,12 @@ Icon?
 openspec/*
 !openspec/config.yaml
 
-# ---------- Documentos de trabajo (no publicables) ----------
+# ---------- Personal, not published ----------
+# The idea inbox is raw material, not a roadmap: it stays on this machine.
+IDEAS.md
 docs/PLAN.md
 docs/BOOTSTRAP.md
+
+# Personal Claude Code decisions; the shared ones live in settings.json
+.claude/settings.local.json
 

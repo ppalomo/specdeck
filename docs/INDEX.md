@@ -28,7 +28,6 @@ updated: 2026-09-13
 |---|---|
 | [../AGENTS.md](../AGENTS.md) | The only source of working instructions: language, stack, the hard rules, what is out of scope for V1, and how a change is carried out. |
 | [../CLAUDE.md](../CLAUDE.md) | One line, importing `AGENTS.md`, so Claude Code and any other agent read the same file. |
-| [../IDEAS.md](../IDEAS.md) | The inbox: dated ideas with no commitment, deleted from it once they become a change. |
 
 ## Where each kind of knowledge belongs
 
@@ -51,3 +50,9 @@ each half where it goes and do not duplicate.
 The product plan and the bootstrap checklist are kept locally and deliberately left
 untracked: they describe how this repository was built, which is of no use to anyone
 reading the code.
+
+`IDEAS.md` is untracked for a different reason. An inbox holds raw material — half-formed,
+unpromised, sometimes never acted on — and published in a public repository it would read
+as a roadmap. It lives in the repository root on the author's machine; the rule for
+capturing into it is in `AGENTS.md`, which is where it belongs, because the rule is about
+how we work and the entries are not.
