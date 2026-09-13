@@ -1,0 +1,15 @@
+{
+  "enabledPlugins": {
+    "fastapi-kit@dotclaude": true,
+    "react-kit@dotclaude": true,
+    "context7-mcp@dotclaude": true
+  },
+  "extraKnownMarketplaces": {
+    "dotclaude": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/ppalomo/dotclaude.git"
+      }
+    }
+  }
+}
