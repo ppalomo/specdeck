@@ -11,6 +11,7 @@ updated: 2026-09-13
 | Document | What it answers |
 |---|---|
 | [glossary.md](glossary.md) | The canonical name of every concept — and the pairs that get confused: change vs commit, current spec vs delta, archive vs sync. |
+| [openspec-cli-contract.md](openspec-cli-contract.md) | What `openspec … --json` returns, what it costs, and why a non-zero exit code is not a failure. |
 
 ## Decisions
 

@@ -33,10 +33,11 @@ Each output is parsed into a Pydantic model declared with `extra='ignore'`.
 Specdeck never reimplements OpenSpec's rules: what is valid, what a schema requires, what
 status an artifact has, is whatever the CLI says.
 
-One deliberate exception: **parsing for rendering**. Spawning the CLI costs 150–300 ms, too
-slow for every keystroke-sized change on disk, so `tasks.md` and `spec.md` are parsed
-in-process for display and task counts, with the CLI refreshed on a longer debounce as the
-canonical answer. In-process parsing renders; it never decides.
+One deliberate exception: **parsing for rendering**. Spawning the CLI costs around half a
+second per invocation whatever the root ([the CLI contract](../openspec-cli-contract.md)),
+far too slow for every keystroke-sized change on disk, so `tasks.md` and `spec.md` are
+parsed in-process for display and task counts, with the CLI refreshed on a longer debounce
+as the canonical answer. In-process parsing renders; it never decides.
 
 ## Consequences
 
