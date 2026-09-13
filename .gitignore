@@ -85,6 +85,8 @@ lerna-debug.log*
 .Trashes
 Icon?
 
-# ---------- Documentos de trabajo (no publicables) ----------
-PLAN.md
-BOOTSTRAP.md
+# ---------- Excluded ----------
+openspec/
+docs/
+
+
