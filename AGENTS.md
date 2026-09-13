@@ -72,3 +72,11 @@ V2. A proposal that includes one of them is out of scope, however small it looks
 - [docs/INDEX.md](docs/INDEX.md) — every document, one line each, and where new knowledge belongs.
 - [docs/glossary.md](docs/glossary.md) — the canonical name of every concept. Use these names in code, endpoints and UI.
 - [docs/adr/](docs/adr/) — why the closed decisions are closed. Read before reopening one.
+
+## Ideas
+
+When the user says "apunta esto", "idea:" or otherwise hands over something that is not the
+current task, add a dated entry at the top of [IDEAS.md](IDEAS.md), implement nothing, and
+return to the task in progress. Never turn an idea into an OpenSpec change directly: ideas
+reach OpenSpec through `/opsx:explore` and `/opsx:propose`, and the entry is deleted from
+`IDEAS.md` when its change is proposed.
