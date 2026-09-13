@@ -85,8 +85,11 @@ lerna-debug.log*
 .Trashes
 Icon?
 
-# ---------- Excluded ----------
-openspec/
-docs/
+# ---------- OpenSpec (solo se versiona la configuración) ----------
+openspec/*
+!openspec/config.yaml
 
+# ---------- Documentos de trabajo (no publicables) ----------
+docs/PLAN.md
+docs/BOOTSTRAP.md
 
