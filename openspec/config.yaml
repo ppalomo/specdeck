@@ -42,8 +42,9 @@ context: |
      parsed into Pydantic models with extra='ignore'. Never reimplement
      OpenSpec's rules.
   4. Parse in process only to render. In-process parsing of tasks.md and spec.md
-     exists because spawning the CLI costs 150-300 ms; it never decides what is
-     valid or what status an artifact has.
+     exists because each CLI invocation costs around half a second whatever the
+     root; it never decides what is valid or what status an artifact has. See
+     docs/openspec-cli-contract.md.
   5. Local first. One asyncio process listening on 127.0.0.1.
   6. Secure by construction. Allowlisted read-only commands, argument lists and
      never a shell, paths resolved and confined to registered roots.
