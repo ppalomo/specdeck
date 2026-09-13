@@ -12,10 +12,15 @@ set -uo pipefail
 
 payload=$(cat)
 
+# Match only where the command is actually *run*: at the start, or after a
+# separator. Matching anywhere would fire on a command that merely mentions it —
+# a grep over the docs, a test feeding this script a payload — and silently move
+# the branch under work in progress.
+#
 # The command may carry redirections or pipes, so take the first kebab-case token
 # after "new change" rather than assuming it is the last argument.
 name=$(printf '%s' "$payload" | jq -r '.tool_input.command // empty' |
-  sed -n "s/.*openspec new change[[:space:]]*['\"]\{0,1\}\([A-Za-z0-9][A-Za-z0-9._-]*\).*/\1/p" |
+  sed -n "s/^\(.*[;&|]\)\{0,1\}[[:space:]]*openspec[[:space:]]\{1,\}new[[:space:]]\{1,\}change[[:space:]]\{1,\}['\"]\{0,1\}\([A-Za-z0-9][A-Za-z0-9._-]*\).*/\2/p" |
   head -1)
 
 [ -n "$name" ] || exit 0
