@@ -16,7 +16,7 @@ STATIC_DIR = Path(__file__).parent / "static"
 
 
 def product_version() -> str:
-    """The version of the installed package, so it cannot drift from what is running."""
+    """Read the version from the installed package, so it cannot drift from what runs."""
     return version(PACKAGE_NAME)
 
 

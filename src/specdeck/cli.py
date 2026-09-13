@@ -19,7 +19,7 @@ app = typer.Typer(
 )
 
 
-def _show_version(value: bool) -> None:
+def _show_version(value: bool) -> None:  # noqa: FBT001  (Typer hands the flag positionally)
     if value:
         typer.echo(product_version())
         raise typer.Exit
@@ -27,7 +27,7 @@ def _show_version(value: bool) -> None:
 
 @app.callback()
 def main(
-    _version: Annotated[
+    _version: Annotated[  # noqa: FBT002  (a flag is a boolean option with a default)
         bool,
         typer.Option(
             "--version",

@@ -2,13 +2,11 @@
 
 from importlib.metadata import version
 
-import pytest
 from httpx import ASGITransport, AsyncClient
 
 from specdeck.app import create_app
 
 
-@pytest.mark.asyncio
 async def test_health_reports_the_product_and_the_installed_version() -> None:
     transport = ASGITransport(app=create_app())
     async with AsyncClient(transport=transport, base_url="http://testserver") as client:
@@ -22,7 +20,6 @@ async def test_health_reports_the_product_and_the_installed_version() -> None:
     }
 
 
-@pytest.mark.asyncio
 async def test_the_openapi_document_is_served() -> None:
     transport = ASGITransport(app=create_app())
     async with AsyncClient(transport=transport, base_url="http://testserver") as client:

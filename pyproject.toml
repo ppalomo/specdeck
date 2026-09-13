@@ -36,3 +36,40 @@ dev = [
 # server would have nothing to serve.
 [tool.hatch.build]
 artifacts = ["src/specdeck/static/**"]
+
+[tool.ruff]
+line-length = 96
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+# A broad selection, chosen explicitly rather than with "ALL" so that upgrading ruff adds
+# rules on purpose instead of by surprise.
+select = [
+    "A", "ANN", "ARG", "ASYNC", "B", "BLE", "C4", "D", "DTZ", "E", "EM", "ERA", "EXE",
+    "F", "FA", "FBT", "FLY", "FURB", "G", "I", "ICN", "INP", "ISC", "LOG", "N", "PERF",
+    "PIE", "PL", "PT", "PTH", "PYI", "Q", "RET", "RSE", "RUF", "S", "SIM", "SLF", "SLOT",
+    "T10", "T20", "TC", "TID", "TRY", "UP", "W", "YTT",
+]
+ignore = [
+    "D203",    # Incompatible with D211, which is the style ruff formats to.
+    "D213",    # Incompatible with D212, which is the style ruff formats to.
+    "COM812",  # Trailing commas are the formatter's business, not the linter's.
+    "ISC001",  # Would fight the formatter over implicit string concatenation.
+]
+
+[tool.ruff.lint.per-file-ignores]
+# A test's name is its documentation, its asserts are the point, and the literals it
+# compares against are what it is asserting.
+"tests/**" = ["D103", "INP001", "PLR2004", "S101"]
+
+[tool.pyright]
+include = ["src", "tests"]
+typeCheckingMode = "strict"
+pythonVersion = "3.13"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

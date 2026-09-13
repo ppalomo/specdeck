@@ -1,14 +1,12 @@
-"""The server serves the compiled interface when the package carries it, and works without it."""
+"""The server serves the compiled interface when it carries it, and runs fine without it."""
 
 from pathlib import Path
 
-import pytest
 from httpx import ASGITransport, AsyncClient
 
 from specdeck.app import create_app
 
 
-@pytest.mark.asyncio
 async def test_the_api_answers_when_there_is_no_compiled_interface(
     tmp_path: Path,
 ) -> None:
@@ -21,7 +19,6 @@ async def test_the_api_answers_when_there_is_no_compiled_interface(
     assert root.status_code == 404
 
 
-@pytest.mark.asyncio
 async def test_the_interface_is_served_without_covering_the_api(tmp_path: Path) -> None:
     (tmp_path / "index.html").write_text("<!doctype html><title>Specdeck</title>")
 
