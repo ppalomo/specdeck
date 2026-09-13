@@ -85,6 +85,10 @@ lerna-debug.log*
 .Trashes
 Icon?
 
+# ---------- Build output ----------
+# `make build` compiles the web interface into the package; it is an output, not a source.
+src/specdeck/static/
+
 # ---------- OpenSpec (solo se versiona la configuración) ----------
 openspec/*
 !openspec/config.yaml
