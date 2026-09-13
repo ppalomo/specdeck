@@ -1,0 +1,38 @@
+[project]
+name = "specdeck"
+version = "0.1.0"
+description = "A local dashboard that reads the OpenSpec directories of several repositories at once."
+requires-python = ">=3.13"
+authors = [{ name = "Pablo Palomo" }]
+
+dependencies = [
+    "fastapi>=0.141.1",
+    "pydantic>=2",
+    "typer>=0.27.2",
+    "uvicorn[standard]>=0.52.4",
+]
+
+[project.scripts]
+specdeck = "specdeck.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/specdeck"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pyright>=1.1.414",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "ruff>=0.16.7",
+]
+
+# The compiled web interface is a build output, so it is ignored by git. Hatchling honours
+# VCS ignore files, so without this it would be left out of the wheel and the packaged
+# server would have nothing to serve.
+[tool.hatch.build]
+artifacts = ["src/specdeck/static/**"]
