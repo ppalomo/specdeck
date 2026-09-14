@@ -91,10 +91,15 @@ async def test_a_file_that_cannot_be_read_is_named_and_the_rest_still_arrives(
 ) -> None:
     contents = await DiskRootReader().read(broken_root)
 
-    # The config is not YAML and the proposal is not text, and the tasks beside them are.
+    # The config is not YAML and the proposal is not text. Both are named, and the tasks
+    # beside them are read as if nothing had happened.
     assert contents.schema_name is None
     assert contents.changes[0].tasks is not None
-    assert {unread.file for unread in contents.unreadable} == {"openspec/config.yaml"}
+    assert {unread.file for unread in contents.unreadable} == {
+        "openspec/config.yaml",
+        "openspec/changes/half-written/proposal.md",
+    }
+    assert contents.changes[0].documents == ()
 
 
 async def test_a_delta_that_cannot_be_read_is_named(tmp_path: Path) -> None:

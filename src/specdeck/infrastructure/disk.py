@@ -8,6 +8,7 @@ from typing import cast
 import yaml
 
 from specdeck.application.contents import (
+    ArtifactDocument,
     CapabilitySpec,
     ChangeDocuments,
     Document,
@@ -106,6 +107,7 @@ class DiskRootReader:
         return ChangeDocuments(
             id=change.name,
             tasks=written,
+            documents=self._documents(root, change, unreadable),
             deltas=tuple(
                 delta
                 for found in _sorted(specs, SPEC_FILE)
@@ -113,6 +115,22 @@ class DiskRootReader:
             ),
             last_modified=_last_modified(change),
             archived_on=_archived_on(change.name) if archived else None,
+        )
+
+    def _documents(
+        self, root: Path, change: Path, unreadable: list[Unreadable]
+    ) -> tuple[ArtifactDocument, ...]:
+        """Every markdown file of the change but its tasks.
+
+        The tasks are parsed into structure rather than rendered as prose, so they are not
+        among the documents.
+        """
+        found = sorted(path for path in change.glob("*.md") if path.name != TASKS_FILE)
+
+        return tuple(
+            ArtifactDocument(artifact=path.stem, file=_relative(root, path), text=text)
+            for path in found
+            if (text := self._text(root, path, unreadable)) is not None
         )
 
     def _capability(

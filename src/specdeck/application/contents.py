@@ -28,11 +28,24 @@ class CapabilitySpec(DomainModel):
     text: str
 
 
+class ArtifactDocument(DomainModel):
+    """The markdown of one artifact, as it was written."""
+
+    artifact: str
+    """The artifact's name, which is its file's without the extension: `proposal`, `design`."""
+
+    file: str
+    text: str
+
+
 class ChangeDocuments(DomainModel):
     """The files of one change, read and not yet understood."""
 
     id: str
     tasks: Document | None = None
+    documents: tuple[ArtifactDocument, ...] = ()
+    """Every other markdown file of the change, so its prose can be read rather than
+    summarised. Tasks are left out: they are parsed rather than rendered."""
     deltas: tuple[CapabilitySpec, ...] = ()
     last_modified: datetime | None = None
     archived_on: date | None = None

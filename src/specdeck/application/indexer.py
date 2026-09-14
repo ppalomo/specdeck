@@ -34,13 +34,14 @@ from specdeck.application.ports import (
     RootReader,
 )
 from specdeck.domain.availability import Availability
-from specdeck.domain.change import Artifact, Change, Tasks
+from specdeck.domain.change import Artifact, ArtifactDocument, Change, Tasks
 from specdeck.domain.change import ChangeStatus as Status
 from specdeck.domain.index import Index
 from specdeck.domain.model import DomainModel
 from specdeck.domain.parsers.spec import parse_deltas, parse_spec
 from specdeck.domain.parsers.tasks import parse_tasks
 from specdeck.domain.repo import Repo
+from specdeck.domain.spec import Spec, TouchedBy
 from specdeck.domain.validation import Validation
 
 ASKED: tuple[Invocation, ...] = ("changes", "specs", "status", "validate")
@@ -121,18 +122,36 @@ class Indexer:
 
 def compose(repo: Repo, contents: RootContents, canonical: Canonical) -> Index:
     """Put the two readings together into one index. Pure, and where the parsing happens."""
+    changes = tuple(_change(documents, canonical) for documents in contents.changes)
+
     return Index(
         repo=repo,
         schema_name=contents.schema_name or _schema_the_cli_saw(canonical),
         specs=tuple(
-            parse_spec(written.text, id=written.capability, file=written.file)
+            _touched(
+                parse_spec(written.text, id=written.capability, file=written.file), changes
+            )
             for written in contents.specs
         ),
-        changes=tuple(_change(documents, canonical) for documents in contents.changes),
+        changes=changes,
         archived=tuple(_change(documents, canonical) for documents in contents.archived),
         canonical=canonical.availability,
         unreadable=contents.unreadable,
         built_at=datetime.now(UTC),
+    )
+
+
+def _touched(spec: Spec, changes: tuple[Change, ...]) -> Spec:
+    """Say which active changes propose something about this capability."""
+    return spec.model_copy(
+        update={
+            "touched_by": tuple(
+                TouchedBy(change=change.id, operation=delta.operation)
+                for change in changes
+                for delta in change.deltas
+                if delta.capability == spec.id
+            )
+        }
     )
 
 
@@ -162,6 +181,10 @@ def _change(documents: ChangeDocuments, canonical: Canonical) -> Change:
             for delta in parse_deltas(
                 written.text, capability=written.capability, file=written.file
             )
+        ),
+        documents=tuple(
+            ArtifactDocument(artifact=one.artifact, file=one.file, text=one.text)
+            for one in documents.documents
         ),
         validation=_validation(verdict, canonical),
         last_modified=(
