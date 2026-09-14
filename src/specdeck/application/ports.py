@@ -9,6 +9,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, Literal, Protocol
 
+from specdeck.application.contents import RootContents
 from specdeck.domain.model import DomainModel
 from specdeck.domain.repo import Repo
 
@@ -66,4 +67,18 @@ class OpenSpecCli(Protocol):
 
     async def run(self, root: Path, invocation: Invocation) -> CliOutput:
         """Ask the CLI one of the four things it may be asked, with the root as cwd."""
+        ...
+
+
+class RootReader(Protocol):
+    """Where the files of a root come from.
+
+    Behind a port because the indexer has to be tried against roots that are a nuisance to
+    have on a disk — one whose file raises when opened, one with a link that leads out of
+    it, one that changed between two reads — and because what it returns is text, which a
+    test can simply write.
+    """
+
+    async def read(self, root: Path) -> RootContents:
+        """Read everything under the root's `openspec/`, and nothing outside it."""
         ...

@@ -26,3 +26,16 @@ class Availability(DomainModel):
     def missing(cls, reason: str) -> Self:
         """Say that it could not, and why."""
         return cls(available=False, reason=reason)
+
+
+class Unreadable(DomainModel):
+    """A file that was there and could not be read, and what stopped it.
+
+    Kept rather than swallowed: an artifact nobody can open is worth seeing, and a root that
+    quietly indexes without it looks complete while it is not.
+    """
+
+    file: str
+    """Path of the file, relative to the root it was found in."""
+
+    reason: str
