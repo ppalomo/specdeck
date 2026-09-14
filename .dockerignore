@@ -1,0 +1,13 @@
+.git
+.venv
+.ruff_cache
+.pytest_cache
+__pycache__
+node_modules
+web/node_modules
+web/dist
+src/specdeck/static
+openspec
+docs
+.claude
+IDEAS.md

@@ -18,6 +18,9 @@ export default defineConfig({
     // In development Vite serves the interface and forwards the API to the server, so the
     // client sees a single origin and the server needs no CORS.
     proxy: { '/api': { target: SERVER } },
+    // A bind mount into a container does not deliver filesystem events, so inside one the
+    // watcher has to ask. On a real machine it listens, which is cheaper.
+    watch: process.env.VITE_POLL === 'true' ? { usePolling: true, interval: 300 } : null,
   },
   test: {
     // The client is a browser program, so its tests run against a DOM.

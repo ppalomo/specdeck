@@ -1,0 +1,49 @@
+# Development, not distribution: `docker compose up` starts the server and the client
+# together without uv, Node or pnpm on the machine. What ships is the Python package that
+# `make build` produces, and what it reads are the repositories on your own disk — which a
+# container only sees if you mount them.
+name: specdeck
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/server.Dockerfile
+    # The published port belongs to this service because the client shares its network
+    # namespace, and it is published on the loopback only: Specdeck answers to this
+    # machine and to nothing else.
+    #
+    # Only Vite's port is published. The server listens on 127.0.0.1 inside the namespace,
+    # which is the container's own loopback and not what a published port forwards to, so
+    # publishing 4820 would hand you a port that answers nothing. The API is reached where
+    # the interface reaches it: through the proxy, at /api.
+    ports:
+      - '127.0.0.1:4821:4821'
+    volumes:
+      - ./src:/app/src:ro
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    # One network namespace for the two containers. The server keeps listening only on
+    # 127.0.0.1, as it must, and Vite still reaches it there.
+    #
+    # The price of sharing it: this container is bound to the namespace the server had when
+    # it was created, so restarting the server alone leaves the client talking to a dead
+    # one. After changing server code, recreate both:
+    #
+    #     docker compose up -d --force-recreate
+    #
+    # Client code needs none of that; the bind mount below is watched live.
+    network_mode: service:server
+    depends_on:
+      - server
+    volumes:
+      - ./web:/app/web
+      # Linux binaries and build caches that must not come from the host.
+      - /app/web/node_modules
+      - /app/web/dist
+    environment:
+      # A bind mount from macOS does not deliver filesystem events, so the watcher polls.
+      VITE_POLL: 'true'
