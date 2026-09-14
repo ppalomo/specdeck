@@ -4,7 +4,7 @@
  * The shape is declared here only until 4.1 generates it from the server's own OpenAPI
  * document. Nothing else in the client may describe the API by hand.
  */
-export type Health = {
+export interface Health {
   name: string
   status: 'ok'
   version: string
