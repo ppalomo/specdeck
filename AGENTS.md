@@ -27,6 +27,26 @@ declares. Never add an i18n layer: the interface is English only.
 Proposing a different library is fine; proposing a different stack is reopening a closed
 decision, and needs a reason that the ADR does not already answer.
 
+## What exists, and the four commands
+
+The skeleton: a Python package in `src/specdeck/` that answers `GET /api/health` and serves
+the compiled interface when it carries one, a React client in `web/` that reads it, and the
+client's API types generated from the server's own OpenAPI document. No domain yet.
+
+The machine is expected to have uv, Node and pnpm; the commands name whichever is missing
+and install nothing themselves. There are four, one per intention, and they are the same
+here and in continuous integration:
+
+| Command | What it does |
+|---|---|
+| `make install` | Installs both sides from `uv.lock` and `pnpm-lock.yaml`, not from what the machine happens to have. |
+| `make dev` | Runs the server and the client, both reloading, and prints the address the interface opens on. |
+| `make check` | Lint, types and tests on both sides, plus the check that the generated API types still match the server. |
+| `make build` | The Python package with the compiled interface inside it, ready to install and run with no Node anywhere. |
+
+`make check` is the only definition of green: CI calls it rather than keeping a second list
+of commands that would drift from this one.
+
 ## Hard rules
 
 1. **Never write to a registered repository.** Not a file, not a checkbox, not a command
