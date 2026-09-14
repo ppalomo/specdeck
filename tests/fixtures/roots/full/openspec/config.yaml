@@ -1,0 +1,5 @@
+schema: spec-driven
+
+context: |
+  A fixture root. Its prose is Spanish and its structural headings are English, which is
+  the shape this project's own artifacts have and the one the parsers must survive.
