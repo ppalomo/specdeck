@@ -1,0 +1,206 @@
+{
+  "changes": [
+    {
+      "changeName": "add-reminders",
+      "schemaName": "spec-driven",
+      "planningHome": {
+        "kind": "repo",
+        "root": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+        "changesDir": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes",
+        "defaultSchema": "spec-driven"
+      },
+      "changeRoot": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders",
+      "artifactPaths": {
+        "proposal": {
+          "outputPath": "proposal.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/proposal.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/proposal.md"
+          ]
+        },
+        "specs": {
+          "outputPath": "specs/**/*.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/specs/**/*.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/specs/task-management/spec.md"
+          ]
+        },
+        "design": {
+          "outputPath": "design.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/design.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/design.md"
+          ]
+        },
+        "tasks": {
+          "outputPath": "tasks.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/tasks.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/add-reminders/tasks.md"
+          ]
+        }
+      },
+      "isPlanningComplete": true,
+      "isComplete": true,
+      "applyRequires": [
+        "tasks"
+      ],
+      "nextSteps": [
+        "All planning artifacts are complete. Run openspec instructions apply --change \"add-reminders\" --json to inspect implementation progress."
+      ],
+      "actionContext": {
+        "mode": "repo-local",
+        "sourceOfTruth": "repo",
+        "planningArtifacts": [
+          "proposal",
+          "specs",
+          "design",
+          "tasks"
+        ],
+        "linkedContext": [],
+        "allowedEditRoots": [
+          "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full"
+        ],
+        "requiresAffectedAreaSelection": false,
+        "constraints": [
+          "Repo-local change artifacts and implementation edits are scoped to this project."
+        ]
+      },
+      "artifacts": [
+        {
+          "id": "proposal",
+          "outputPath": "proposal.md",
+          "status": "done",
+          "requires": []
+        },
+        {
+          "id": "specs",
+          "outputPath": "specs/**/*.md",
+          "status": "done",
+          "requires": [
+            "proposal"
+          ]
+        },
+        {
+          "id": "design",
+          "outputPath": "design.md",
+          "status": "done",
+          "requires": [
+            "proposal"
+          ]
+        },
+        {
+          "id": "tasks",
+          "outputPath": "tasks.md",
+          "status": "done",
+          "requires": [
+            "specs",
+            "design"
+          ]
+        }
+      ]
+    },
+    {
+      "changeName": "retire-old-reports",
+      "schemaName": "spec-driven",
+      "planningHome": {
+        "kind": "repo",
+        "root": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+        "changesDir": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes",
+        "defaultSchema": "spec-driven"
+      },
+      "changeRoot": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports",
+      "artifactPaths": {
+        "proposal": {
+          "outputPath": "proposal.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/proposal.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/proposal.md"
+          ]
+        },
+        "specs": {
+          "outputPath": "specs/**/*.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/specs/**/*.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/specs/reports/spec.md"
+          ]
+        },
+        "design": {
+          "outputPath": "design.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/design.md",
+          "existingOutputPaths": []
+        },
+        "tasks": {
+          "outputPath": "tasks.md",
+          "resolvedOutputPath": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/tasks.md",
+          "existingOutputPaths": [
+            "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full/openspec/changes/retire-old-reports/tasks.md"
+          ]
+        }
+      },
+      "isPlanningComplete": false,
+      "isComplete": false,
+      "applyRequires": [
+        "tasks"
+      ],
+      "nextSteps": [
+        "Run openspec instructions design --change \"retire-old-reports\" --json before writing that artifact."
+      ],
+      "actionContext": {
+        "mode": "repo-local",
+        "sourceOfTruth": "repo",
+        "planningArtifacts": [
+          "proposal",
+          "specs",
+          "design",
+          "tasks"
+        ],
+        "linkedContext": [],
+        "allowedEditRoots": [
+          "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full"
+        ],
+        "requiresAffectedAreaSelection": false,
+        "constraints": [
+          "Repo-local change artifacts and implementation edits are scoped to this project."
+        ]
+      },
+      "artifacts": [
+        {
+          "id": "proposal",
+          "outputPath": "proposal.md",
+          "status": "done",
+          "requires": []
+        },
+        {
+          "id": "specs",
+          "outputPath": "specs/**/*.md",
+          "status": "done",
+          "requires": [
+            "proposal"
+          ]
+        },
+        {
+          "id": "design",
+          "outputPath": "design.md",
+          "status": "ready",
+          "requires": [
+            "proposal"
+          ]
+        },
+        {
+          "id": "tasks",
+          "outputPath": "tasks.md",
+          "status": "done",
+          "requires": [
+            "specs",
+            "design"
+          ]
+        }
+      ]
+    }
+  ],
+  "root": {
+    "path": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+    "source": "nearest"
+  }
+}

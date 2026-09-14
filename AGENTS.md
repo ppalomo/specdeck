@@ -27,11 +27,28 @@ declares. Never add an i18n layer: the interface is English only.
 Proposing a different library is fine; proposing a different stack is reopening a closed
 decision, and needs a reason that the ADR does not already answer.
 
-## What exists, and the four commands
+## What exists
 
-The skeleton: a Python package in `src/specdeck/` that answers `GET /api/health` and serves
-the compiled interface when it carries one, a React client in `web/` that reads it, and the
-client's API types generated from the server's own OpenAPI document. No domain yet.
+The server reads OpenSpec roots and serves what it finds. A root is registered by path in
+`~/.config/specdeck/repos.json`; reading it gives its capabilities' specs, its active and
+archived changes, each change's pipeline, its tasks with the line every checkbox is on, and
+its deltas with their operation. All of it is published under `/api/repos`, and the client's
+types are generated from that contract. There is no interface over it yet.
+
+The layers and the one rule about them:
+
+| Layer | Holds | May reach |
+|---|---|---|
+| `domain/` | Models and pure parsers. No I/O, no framework. | `domain/` |
+| `application/` | Use cases, and the ports they need as `Protocol`. | `domain/` |
+| `infrastructure/` | The disk, subprocesses, the one file we write. | `domain/`, `application/` |
+| `api/` | FastAPI application, routers, wiring. | everything inward |
+
+Dependencies point inwards, and `tests/test_layers.py` fails the build when one does not. A
+port is written only when a test substitutes it or a second implementation is in sight;
+`tests/fixtures/roots/` holds the OpenSpec roots the tests read.
+
+## The four commands
 
 The machine is expected to have uv, Node and pnpm; the commands name whichever is missing
 and install nothing themselves. There are four, one per intention, and they are the same
@@ -45,7 +62,9 @@ here and in continuous integration:
 | `make build` | The Python package with the compiled interface inside it, ready to install and run with no Node anywhere. |
 
 `make check` is the only definition of green: CI calls it rather than keeping a second list
-of commands that would drift from this one.
+of commands that would drift from this one. `specdeck add <path>`, `remove`, `list` and
+`read` work the registry from the terminal; the tests that need the real `openspec` binary
+skip where it is not installed, which is every CI run.
 
 ## Hard rules
 

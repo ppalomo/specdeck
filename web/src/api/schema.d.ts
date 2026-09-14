@@ -21,10 +21,250 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/repos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Registered */
+        get: operations["registered_api_repos_get"];
+        put?: never;
+        /** Register */
+        post: operations["register_api_repos_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One */
+        get: operations["one_api_repos__repo_id__get"];
+        put?: never;
+        post?: never;
+        /** Unregister */
+        delete: operations["unregister_api_repos__repo_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}/changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * All Of
+         * @description Every change of a root, the archived ones after the active ones.
+         */
+        get: operations["all_of_api_repos__repo_id__changes_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}/changes/{change_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One */
+        get: operations["one_api_repos__repo_id__changes__change_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}/reading": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Read Again
+         * @description Read a registered root again.
+         *
+         *     Nothing watches the files yet, so this is how what is held catches up with what is on
+         *     disk. It writes nothing anywhere: it re-reads a root and replaces what was known.
+         */
+        post: operations["read_again_api_repos__repo_id__reading_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}/specs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** All Of */
+        get: operations["all_of_api_repos__repo_id__specs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/repos/{repo_id}/specs/{spec_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One
+         * @description One capability's current spec.
+         *
+         *     The identifier is a path because a capability may be nested — `identity/user-auth` is
+         *     one capability, not a capability inside another.
+         */
+        get: operations["one_api_repos__repo_id__specs__spec_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Artifact
+         * @description One node of the change's pipeline, as the root's schema declares it.
+         */
+        Artifact: {
+            /**
+             * Files
+             * @default []
+             */
+            files: string[];
+            /** Id */
+            id: string;
+            /**
+             * Requires
+             * @default []
+             */
+            requires: string[];
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "done" | "ready" | "blocked" | "skipped";
+        };
+        /**
+         * Availability
+         * @description The answer to "could this be read?", kept apart from the thing itself.
+         *
+         *     A registered root whose disk is unplugged and an OpenSpec CLI that is not installed are
+         *     both ordinary, and neither is an empty result: without this, "nothing here" and "could
+         *     not look" arrive indistinguishable.
+         */
+        Availability: {
+            /** Available */
+            available: boolean;
+            /** Reason */
+            reason?: string | null;
+        };
+        /**
+         * Change
+         * @description A plan: the documents that describe a piece of work and the tasks that carry it out.
+         *
+         *     A change is not a git object. It usually maps to a branch and several commits, and it
+         *     exists before any of them.
+         */
+        Change: {
+            /** Archived On */
+            archived_on?: string | null;
+            /**
+             * Artifacts
+             * @default []
+             */
+            artifacts: components["schemas"]["Artifact"][];
+            /**
+             * Deltas
+             * @default []
+             */
+            deltas: components["schemas"]["Delta"][];
+            /** Id */
+            id: string;
+            /** Last Modified */
+            last_modified?: string | null;
+            /** Schema Name */
+            schema_name?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "planning" | "in-progress" | "complete" | "archived";
+            /**
+             * @default {
+             *       "done": 0,
+             *       "groups": [],
+             *       "total": 0
+             *     }
+             */
+            tasks: components["schemas"]["Tasks"];
+            validation?: components["schemas"]["Validation"] | null;
+        };
+        /**
+         * Delta
+         * @description What one change proposes to do to one capability.
+         *
+         *     Never the whole spec: a delta states only the edit, which is why it carries the
+         *     operation and the current spec does not.
+         */
+        Delta: {
+            /** Capability */
+            capability: string;
+            /**
+             * Operation
+             * @enum {string}
+             */
+            operation: "ADDED" | "MODIFIED" | "REMOVED" | "RENAMED";
+            /**
+             * Requirements
+             * @default []
+             */
+            requirements: components["schemas"]["Requirement"][];
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
         /**
          * Health
          * @description What the server answers when asked whether it is alive and who it is.
@@ -39,6 +279,294 @@ export interface components {
             status: "ok";
             /** Version */
             version: string;
+        };
+        /**
+         * Index
+         * @description The state of one root, read from disk and dated.
+         *
+         *     `built_at` is part of what is known: while nothing watches the files, what is here and
+         *     what is on disk drift apart, and the honest answer to "is this current?" is when it was
+         *     read rather than a promise that it is.
+         */
+        Index: {
+            /**
+             * Archived
+             * @default []
+             */
+            archived: components["schemas"]["Change"][];
+            /**
+             * Built At
+             * Format: date-time
+             */
+            built_at: string;
+            /**
+             * @default {
+             *       "available": true
+             *     }
+             */
+            canonical: components["schemas"]["Availability"];
+            /**
+             * Changes
+             * @default []
+             */
+            changes: components["schemas"]["Change"][];
+            repo: components["schemas"]["Repo"];
+            /** Schema Name */
+            schema_name?: string | null;
+            /**
+             * Specs
+             * @default []
+             */
+            specs: components["schemas"]["Spec"][];
+            /**
+             * Unreadable
+             * @default []
+             */
+            unreadable: components["schemas"]["Unreadable"][];
+        };
+        /**
+         * Issue
+         * @description One thing OpenSpec has to say about one artifact.
+         */
+        Issue: {
+            /**
+             * Level
+             * @enum {string}
+             */
+            level: "ERROR" | "WARNING" | "INFO";
+            /** Message */
+            message: string;
+            /** Path */
+            path: string;
+        };
+        /**
+         * Location
+         * @description The exact point a piece of an artifact was read from.
+         *
+         *     Carried by every task, requirement and scenario so an editor can later be opened on it
+         *     without searching the file again for text that may appear more than once.
+         */
+        Location: {
+            /** File */
+            file: string;
+            /** Line */
+            line: number;
+        };
+        /**
+         * RegisteredRepo
+         * @description A registered root, with how it is doing and how current what is known about it is.
+         *
+         *     Availability and canonical state are answered separately and always: an interface that
+         *     cannot tell "there are no changes" from "the disk is unplugged", or from "the OpenSpec
+         *     CLI is not installed", has no way to say anything true to whoever is looking at it.
+         */
+        RegisteredRepo: {
+            availability: components["schemas"]["Availability"];
+            /** Built At */
+            built_at?: string | null;
+            canonical?: components["schemas"]["Availability"] | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "repo" | "store";
+            /** Name */
+            name: string;
+            /**
+             * Path
+             * Format: path
+             */
+            path: string;
+        };
+        /**
+         * Registration
+         * @description What has to be said to register a root: where it is.
+         */
+        Registration: {
+            /**
+             * Path
+             * Format: path
+             */
+            path: string;
+        };
+        /**
+         * Repo
+         * @description One entry of the registry: a root registered by path, and how it is doing.
+         */
+        Repo: {
+            /**
+             * @default {
+             *       "available": true
+             *     }
+             */
+            availability: components["schemas"]["Availability"];
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "repo" | "store";
+            /** Name */
+            name: string;
+            /**
+             * Path
+             * Format: path
+             */
+            path: string;
+        };
+        /**
+         * Requirement
+         * @description A single statement of behaviour, with the cases that prove it.
+         */
+        Requirement: {
+            location: components["schemas"]["Location"];
+            /** Name */
+            name: string;
+            /**
+             * Scenarios
+             * @default []
+             */
+            scenarios: components["schemas"]["Scenario"][];
+            /** Text */
+            text: string;
+        };
+        /**
+         * Scenario
+         * @description A concrete case that proves a requirement.
+         */
+        Scenario: {
+            location: components["schemas"]["Location"];
+            /** Name */
+            name: string;
+            /**
+             * Steps
+             * @default []
+             */
+            steps: string[];
+        };
+        /**
+         * Spec
+         * @description The current, authoritative behaviour of one capability.
+         */
+        Spec: {
+            /** Id */
+            id: string;
+            /** Purpose */
+            purpose?: string | null;
+            /**
+             * Requirement Count
+             * @description How many requirements this capability states.
+             */
+            readonly requirement_count: number;
+            /**
+             * Requirements
+             * @default []
+             */
+            requirements: components["schemas"]["Requirement"][];
+        };
+        /**
+         * Task
+         * @description One checkbox in `tasks.md`.
+         */
+        Task: {
+            /** Done */
+            done: boolean;
+            location: components["schemas"]["Location"];
+            /** Number */
+            number: string;
+            /** Text */
+            text: string;
+        };
+        /**
+         * TaskGroup
+         * @description The tasks under one `## N. Title` heading.
+         */
+        TaskGroup: {
+            location: components["schemas"]["Location"];
+            /**
+             * Tasks
+             * @default []
+             */
+            tasks: components["schemas"]["Task"][];
+            /** Title */
+            title: string;
+        };
+        /**
+         * Tasks
+         * @description Everything in a change's `tasks.md`, and how much of it is done.
+         */
+        Tasks: {
+            /**
+             * Done
+             * @description How many of them are checked off.
+             */
+            readonly done: number;
+            /**
+             * Groups
+             * @default []
+             */
+            groups: components["schemas"]["TaskGroup"][];
+            /**
+             * Total
+             * @description How many tasks the change has.
+             */
+            readonly total: number;
+        };
+        /**
+         * Unreadable
+         * @description A file that was there and could not be read, and what stopped it.
+         *
+         *     Kept rather than swallowed: an artifact nobody can open is worth seeing, and a root that
+         *     quietly indexes without it looks complete while it is not.
+         */
+        Unreadable: {
+            /** File */
+            file: string;
+            /** Reason */
+            reason: string;
+        };
+        /**
+         * Validation
+         * @description The verdict on one item, as the OpenSpec CLI gave it.
+         *
+         *     The counts are kept apart on purpose. A root of specs written in Spanish carries
+         *     hundreds of standing warnings about RFC 2119 wording while passing every check, so a
+         *     single number that adds the three levels together describes nothing at all.
+         */
+        Validation: {
+            /**
+             * Errors
+             * @description How many issues are the kind that makes an item invalid.
+             */
+            readonly errors: number;
+            /**
+             * Issues
+             * @default []
+             */
+            issues: components["schemas"]["Issue"][];
+            /** Valid */
+            valid: boolean;
+            /**
+             * Warnings
+             * @description How many issues are worth seeing but leave the item valid.
+             */
+            readonly warnings: number;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
         };
     };
     responses: never;
@@ -65,6 +593,276 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Health"];
+                };
+            };
+        };
+    };
+    registered_api_repos_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegisteredRepo"][];
+                };
+            };
+        };
+    };
+    register_api_repos_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Registration"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RegisteredRepo"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    one_api_repos__repo_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Index"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unregister_api_repos__repo_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    all_of_api_repos__repo_id__changes_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Change"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    one_api_repos__repo_id__changes__change_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+                change_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Change"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_again_api_repos__repo_id__reading_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Index"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    all_of_api_repos__repo_id__specs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Spec"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    one_api_repos__repo_id__specs__spec_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                repo_id: string;
+                spec_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Spec"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -1,0 +1,90 @@
+{
+  "items": [
+    {
+      "id": "add-reminders",
+      "type": "change",
+      "valid": true,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "task-management/spec.md",
+          "message": "ADDED \"Una tarea puede avisar una vez\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        },
+        {
+          "level": "WARNING",
+          "path": "task-management/spec.md",
+          "message": "MODIFIED \"Una tarea se puede dar por hecha\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        }
+      ],
+      "durationMs": 14
+    },
+    {
+      "id": "reports",
+      "type": "spec",
+      "valid": true,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[0]",
+          "message": "Requirement \"Un informe dice de qué periodo habla\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        }
+      ],
+      "durationMs": 3
+    },
+    {
+      "id": "retire-old-reports",
+      "type": "change",
+      "valid": true,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "reports/spec.md",
+          "message": "MODIFIED \"Un informe dice de qué periodo habla\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        }
+      ],
+      "durationMs": 14
+    },
+    {
+      "id": "task-management",
+      "type": "spec",
+      "valid": true,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "requirements[0]",
+          "message": "Requirement \"Una tarea se puede dar por hecha\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        },
+        {
+          "level": "WARNING",
+          "path": "requirements[1]",
+          "message": "Requirement \"Las tareas se agrupan\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        }
+      ],
+      "durationMs": 1
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "byType": {
+      "change": {
+        "items": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "spec": {
+        "items": 2,
+        "passed": 2,
+        "failed": 0
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+    "source": "nearest"
+  }
+}

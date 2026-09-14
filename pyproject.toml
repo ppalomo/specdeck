@@ -7,8 +7,11 @@ authors = [{ name = "Pablo Palomo" }]
 
 dependencies = [
     "fastapi>=0.141.1",
+    "markdown-it-py>=4.2.0",
     "pydantic>=2",
+    "pyyaml>=6.0.3",
     "typer>=0.27.2",
+    "types-pyyaml>=6.0.12.20260906",
     "uvicorn[standard]>=0.52.4",
 ]
 
@@ -41,6 +44,10 @@ artifacts = ["src/specdeck/static/**"]
 line-length = 96
 target-version = "py313"
 src = ["src", "tests"]
+# The fixture roots are data, not source: they hold the OpenSpec trees the tests read, one
+# of which is deliberately not valid UTF-8 so that "a file that cannot be read" can be
+# tested. Walking them buys nothing and chokes on exactly the file that has to be there.
+extend-exclude = ["tests/fixtures"]
 
 [tool.ruff.lint]
 # A broad selection, chosen explicitly rather than with "ALL" so that upgrading ruff adds
@@ -60,8 +67,9 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 # A test's name is its documentation, its asserts are the point, and the literals it
-# compares against are what it is asserting.
-"tests/**" = ["D103", "INP001", "PLR2004", "S101"]
+# compares against are what it is asserting. A fixture's docstring describes the situation
+# it hands over, which is a noun and not an imperative however the rule reads it.
+"tests/**" = ["D103", "D401", "INP001", "PLR2004", "S101"]
 
 [tool.pyright]
 include = ["src", "tests"]
