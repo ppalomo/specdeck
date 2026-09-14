@@ -1,9 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Specdeck</title>
+    <!--
+      The theme is decided here, before a single byte of the application is downloaded.
+      Anything that waits for React to mount happens after the first paint, and by then a
+      flash of the wrong theme has already been seen. `dark` is on the element above so that
+      even a browser with storage denied never paints white first.
+    -->
+    <script>
+      ;(function () {
+        try {
+          var chosen = window.localStorage.getItem('specdeck.theme')
+          if (chosen === 'light' || chosen === 'dark') {
+            document.documentElement.setAttribute('data-theme', chosen)
+          }
+        } catch (denied) {
+          /* The default on the html element stands. */
+        }
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

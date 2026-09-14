@@ -48,6 +48,13 @@ Dependencies point inwards, and `tests/test_layers.py` fails the build when one 
 port is written only when a test substitutes it or a second implementation is in sight;
 `tests/fixtures/roots/` holds the OpenSpec roots the tests read.
 
+The client has a visual language and the pieces built from it. **Look at the gallery before
+writing a component**: it is a page of the application, at `web/src/gallery/`, showing every
+token and every piece in each of its states. Screens decide nothing about appearance — the
+tokens in `web/src/index.css` decide it, and three tests keep them honest: contrast against
+every layer in both themes, spacing on the 4 px grid with three radii, and no class name
+stitched together at runtime, which Tailwind cannot see and silently renders as nothing.
+
 ## The four commands
 
 The machine is expected to have uv, Node and pnpm; the commands name whichever is missing

@@ -33,7 +33,11 @@ export default defineConfig({
   test: {
     // The client is a browser program, so its tests run against a DOM.
     environment: 'jsdom',
-    include: ['src/**/*.test.{ts,tsx}'],
+    setupFiles: ['./src/test-setup.ts'],
+    // Two suites. Under `src/` is the interface, tried in a DOM. Under `tests/` is what the
+    // repository itself has to be true of — the palette's contrast, what the built page is
+    // allowed to depend on — which reads files and needs Node rather than a browser.
+    include: ['src/**/*.test.{ts,tsx}', 'tests/**/*.test.ts'],
     restoreMocks: true,
   },
 })
