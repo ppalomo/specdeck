@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --build",
     "test": "vitest run",
-    "api:types": "uv run --project .. specdeck openapi | openapi-typescript --output src/api/schema.d.ts"
+    "api:types": "sh scripts/api-types.sh",
+    "api:check": "sh scripts/api-types.sh --check"
   },
   "dependencies": {
     "react": "^19.3.0",
