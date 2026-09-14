@@ -1,40 +1,23 @@
 """The FastAPI application: the API Specdeck serves and the contract that describes it."""
 
-from importlib.metadata import version
 from pathlib import Path
-from typing import Literal
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
 
-PRODUCT_NAME = "Specdeck"
-PACKAGE_NAME = "specdeck"
+from specdeck.api.routes import health
+from specdeck.domain.product import PRODUCT_NAME, product_version
 
 # Where `make build` leaves the compiled web interface, so a built package carries it.
-STATIC_DIR = Path(__file__).parent / "static"
-
-
-def product_version() -> str:
-    """Read the version from the installed package, so it cannot drift from what runs."""
-    return version(PACKAGE_NAME)
-
-
-class Health(BaseModel):
-    """What the server answers when asked whether it is alive and who it is."""
-
-    name: str
-    status: Literal["ok"]
-    version: str
+# `parents[1]` is the package root: the interface ships inside the package, one level up
+# from this layer.
+STATIC_DIR = Path(__file__).resolve().parents[1] / "static"
 
 
 def create_app(static_dir: Path | None = None) -> FastAPI:
     """Build the application. Everything it answers depends only on this process."""
     app = FastAPI(title=PRODUCT_NAME, version=product_version())
-
-    @app.get("/api/health")
-    async def health() -> Health:
-        return Health(name=PRODUCT_NAME, status="ok", version=product_version())
+    app.include_router(health.router)
 
     directory = STATIC_DIR if static_dir is None else static_dir
     if directory.is_dir():

@@ -4,7 +4,7 @@ from importlib.metadata import version
 
 from httpx import ASGITransport, AsyncClient
 
-from specdeck.app import create_app
+from specdeck.api.app import create_app
 
 
 async def test_health_reports_the_product_and_the_installed_version() -> None:

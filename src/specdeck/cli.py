@@ -9,14 +9,15 @@ import typer
 import uvicorn
 from uvicorn.supervisors import ChangeReload
 
-from specdeck.app import create_app, product_version
+from specdeck.api.app import create_app
+from specdeck.domain.product import product_version
 
 HOST = "127.0.0.1"
 PORT = 4820
 
 # The import string uvicorn needs to build the application again after a reload, and
 # the directory whose changes are worth reloading for.
-APP = "specdeck.app:app"
+APP = "specdeck.api.app:app"
 SOURCE = Path(__file__).parent
 
 app = typer.Typer(

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from httpx import ASGITransport, AsyncClient
 
-from specdeck.app import create_app
+from specdeck.api.app import create_app
 
 
 async def test_the_api_answers_when_there_is_no_compiled_interface(
