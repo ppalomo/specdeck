@@ -29,6 +29,13 @@ class Requirement(DomainModel):
     scenarios: tuple[Scenario, ...] = ()
 
 
+class TouchedBy(DomainModel):
+    """An active change that proposes something about a capability."""
+
+    change: str
+    operation: Operation
+
+
 class Spec(DomainModel):
     """The current, authoritative behaviour of one capability."""
 
@@ -37,6 +44,13 @@ class Spec(DomainModel):
 
     purpose: str | None = None
     requirements: tuple[Requirement, ...] = ()
+
+    touched_by: tuple[TouchedBy, ...] = ()
+    """Active changes proposing something about this capability, and what.
+
+    Worked out where the deltas already are. Left out, every screen that needs it has to ask
+    for the whole repository and count for itself — the same sum done worse, once per place
+    that needs it."""
 
     @computed_field
     @property

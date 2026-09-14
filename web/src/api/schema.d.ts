@@ -185,6 +185,18 @@ export interface components {
             status: "done" | "ready" | "blocked" | "skipped";
         };
         /**
+         * ArtifactDocument
+         * @description What one of a change's artifacts says, and where it is.
+         */
+        ArtifactDocument: {
+            /** Artifact */
+            artifact: string;
+            /** File */
+            file: string;
+            /** Text */
+            text: string;
+        };
+        /**
          * Availability
          * @description The answer to "could this be read?", kept apart from the thing itself.
          *
@@ -218,6 +230,11 @@ export interface components {
              * @default []
              */
             deltas: components["schemas"]["Delta"][];
+            /**
+             * Documents
+             * @default []
+             */
+            documents: components["schemas"]["ArtifactDocument"][];
             /** Id */
             id: string;
             /** Last Modified */
@@ -466,6 +483,11 @@ export interface components {
              * @default []
              */
             requirements: components["schemas"]["Requirement"][];
+            /**
+             * Touched By
+             * @default []
+             */
+            touched_by: components["schemas"]["TouchedBy"][];
         };
         /**
          * Task
@@ -514,6 +536,19 @@ export interface components {
              * @description How many tasks the change has.
              */
             readonly total: number;
+        };
+        /**
+         * TouchedBy
+         * @description An active change that proposes something about a capability.
+         */
+        TouchedBy: {
+            /** Change */
+            change: string;
+            /**
+             * Operation
+             * @enum {string}
+             */
+            operation: "ADDED" | "MODIFIED" | "REMOVED" | "RENAMED";
         };
         /**
          * Unreadable

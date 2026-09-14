@@ -182,7 +182,10 @@ async def test_what_could_not_be_read_is_named_and_the_rest_indexed(broken_root:
     index = await Indexer(DiskRootReader(), absent).index(a_repo(broken_root, "broken"))
 
     assert index.schema_name is None
-    assert [unread.file for unread in index.unreadable] == ["openspec/config.yaml"]
+    assert [unread.file for unread in index.unreadable] == [
+        "openspec/config.yaml",
+        "openspec/changes/half-written/proposal.md",
+    ]
     # The change beside the broken config is still here, with the tasks that could be read.
     assert index.changes[0].id == "half-written"
     assert index.changes[0].tasks.total == 1
@@ -212,3 +215,61 @@ async def test_the_cli_is_asked_for_all_four_things_at_once(
     await Indexer(DiskRootReader(), captured_cli).index(a_repo(full_root))
 
     assert (full_root, invocation) in captured_cli.asked
+
+
+async def test_a_capability_says_which_changes_are_touching_it(
+    full_root: Path, captured_cli: CapturedCli
+) -> None:
+    index = await Indexer(DiskRootReader(), captured_cli).index(a_repo(full_root))
+
+    reports = next(spec for spec in index.specs if spec.id == "reports")
+    touching = {(one.change, one.operation) for one in reports.touched_by}
+
+    # `retire-old-reports` modifies it, removes a requirement and renames another.
+    assert touching == {
+        ("retire-old-reports", "MODIFIED"),
+        ("retire-old-reports", "REMOVED"),
+        ("retire-old-reports", "RENAMED"),
+    }
+
+
+async def test_a_capability_nobody_is_touching_says_so_with_an_empty_list(
+    tmp_path: Path, captured_cli: CapturedCli
+) -> None:
+    root = tmp_path / "quiet"
+    (root / "openspec" / "specs" / "untouched").mkdir(parents=True)
+    (root / "openspec" / "config.yaml").write_text("schema: spec-driven\n")
+    (root / "openspec" / "specs" / "untouched" / "spec.md").write_text(
+        "## Purpose\n\nNadie la está tocando.\n"
+    )
+
+    index = await Indexer(DiskRootReader(), captured_cli).index(a_repo(root, "quiet"))
+
+    assert index.specs[0].touched_by == ()
+
+
+async def test_an_archived_change_is_not_reported_as_touching_a_capability(
+    full_root: Path, captured_cli: CapturedCli
+) -> None:
+    # The archive is history, not work in flight: a capability's list is what is being
+    # proposed about it now.
+    index = await Indexer(DiskRootReader(), captured_cli).index(a_repo(full_root))
+
+    tasks = next(spec for spec in index.specs if spec.id == "task-management")
+
+    assert all(one.change != "2026-08-01-date-every-task" for one in tasks.touched_by)
+
+
+async def test_a_change_carries_the_markdown_of_its_artifacts(
+    full_root: Path, captured_cli: CapturedCli
+) -> None:
+    index = await Indexer(DiskRootReader(), captured_cli).index(a_repo(full_root))
+    reminders = next(change for change in index.changes if change.id == "add-reminders")
+
+    written = {one.artifact: one for one in reminders.documents}
+
+    assert set(written) == {"proposal", "design"}
+    assert written["proposal"].text.startswith("## Why")
+    assert written["proposal"].file == "openspec/changes/add-reminders/proposal.md"
+    # The tasks are parsed rather than rendered, so they are not among the documents.
+    assert "tasks" not in written

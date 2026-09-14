@@ -48,9 +48,15 @@ Dependencies point inwards, and `tests/test_layers.py` fails the build when one 
 port is written only when a test substitutes it or a second implementation is in sight;
 `tests/fixtures/roots/` holds the OpenSpec roots the tests read.
 
+The client shows it. Four screens at `web/src/screens/`: the dashboard with a card per
+repository and everything in flight across all of them, a repository with its changes by
+state and its capabilities, a change with its pipeline, its prose, its tasks and its
+validation, and a capability with its requirements and scenarios. Routes are TanStack Router,
+remote state is TanStack Query, and what is on screen is never emptied to be refilled.
+
 The client has a visual language and the pieces built from it. **Look at the gallery before
-writing a component**: it is a page of the application, at `web/src/gallery/`, showing every
-token and every piece in each of its states. Screens decide nothing about appearance — the
+writing a component**: it is a route of the application, at `/system`, showing every token
+and every piece in each of its states. Screens decide nothing about appearance — the
 tokens in `web/src/index.css` decide it, and three tests keep them honest: contrast against
 every layer in both themes, spacing on the 4 px grid with three radii, and no class name
 stitched together at runtime, which Tailwind cannot see and silently renders as nothing.

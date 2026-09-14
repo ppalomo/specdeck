@@ -66,6 +66,14 @@ class Tasks(DomainModel):
         return sum(1 for group in self.groups for task in group.tasks if task.done)
 
 
+class ArtifactDocument(DomainModel):
+    """What one of a change's artifacts says, and where it is."""
+
+    artifact: str
+    file: str
+    text: str
+
+
 class Change(DomainModel):
     """A plan: the documents that describe a piece of work and the tasks that carry it out.
 
@@ -81,6 +89,8 @@ class Change(DomainModel):
     artifacts: tuple[Artifact, ...] = ()
     tasks: Tasks = Tasks()
     deltas: tuple[Delta, ...] = ()
+    documents: tuple[ArtifactDocument, ...] = ()
+    """The markdown of the change's artifacts, so a proposal can be read as what it is."""
     validation: Validation | None = None
     """Absent when the OpenSpec CLI could not be asked. Never inferred from our own parse."""
 
