@@ -9,6 +9,7 @@
 # Everything else here exists because one of those four uses it.
 
 WEB := web
+STATIC := src/specdeck/static
 HOST := 127.0.0.1
 INTERFACE := 4821
 
@@ -100,6 +101,12 @@ check-client-tests:
 
 # --------------------------------------------------------------------------------- build
 
-build:
+# The interface is compiled into `src/specdeck/static/` and the package is built around it,
+# so what ships is one thing to install: the server finds the interface next to its own
+# code and serves it without a single Node process on the machine that runs it.
+build: require-tools
+	@echo '--> interface: compiling into $(STATIC)'
 	pnpm --dir $(WEB) build
+	@echo '--> package: building with the interface inside'
 	uv build
+	@echo 'The package is in dist/, with the interface inside it.'
