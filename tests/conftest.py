@@ -6,11 +6,15 @@ Each root exists because something measured in `docs/openspec-cli-contract.md` n
 to happen.
 """
 
+import json
 from pathlib import Path
 
 import pytest
 
+from specdeck.application.ports import CliOutput, Invocation
+
 ROOTS = Path(__file__).resolve().parent / "fixtures" / "roots"
+CAPTURED = Path(__file__).resolve().parent / "fixtures" / "cli"
 
 
 @pytest.fixture
@@ -60,3 +64,43 @@ def broken_root() -> Path:
 def not_a_root_dir() -> Path:
     """An ordinary directory with no `openspec/`. Registering it has to be refused."""
     return ROOTS / "not-a-root"
+
+
+class CapturedCli:
+    """An OpenSpec CLI that answers with what the real one answered, once, for the full root.
+
+    Standing in for the real thing is what lets the indexer be tested where `openspec` is not
+    installed — which is every continuous integration run. The answers are captured rather
+    than invented, and `tests/test_openspec_cli_integration.py` is what notices when they
+    stop being true.
+    """
+
+    def __init__(
+        self, *, fails: Exception | None = None, answers: dict[str, str] | None = None
+    ) -> None:
+        """Answer from the captured documents, or fail the same way every time."""
+        self.fails = fails
+        self.answers = answers or {}
+        self.asked: list[tuple[Path, str]] = []
+
+    async def run(self, root: Path, invocation: Invocation) -> CliOutput:
+        """Answer as the real CLI did, and remember having been asked."""
+        self.asked.append((root, invocation))
+        if self.fails is not None:
+            raise self.fails
+
+        name = self.answers.get(invocation, invocation)
+        captured = CAPTURED / f"{name}.json"
+        if not captured.is_file():
+            return CliOutput(exit_code=0, document=None)
+
+        return CliOutput(
+            exit_code=1 if "invalid" in name or "not-a-root" in name else 0,
+            document=json.loads(captured.read_text()),
+        )
+
+
+@pytest.fixture
+def captured_cli() -> CapturedCli:
+    """The OpenSpec CLI, answering what it answered when the fixtures were captured."""
+    return CapturedCli()

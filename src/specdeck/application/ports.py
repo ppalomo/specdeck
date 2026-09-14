@@ -57,6 +57,29 @@ class CliOutput(DomainModel):
     failure by itself."""
 
 
+class CliUnavailableError(Exception):
+    """The OpenSpec command line is not on this machine."""
+
+    def __init__(self, executable: str) -> None:
+        """Say which executable was looked for."""
+        self.executable = executable
+        message = (
+            f"the {executable!r} executable is not installed or not on the PATH, "
+            f"so canonical state cannot be read"
+        )
+        super().__init__(message)
+
+
+class CliTimedOutError(Exception):
+    """An invocation did not finish in the time it is given."""
+
+    def __init__(self, invocation: Invocation, seconds: float) -> None:
+        """Say what was being run and how long it was given."""
+        self.invocation = invocation
+        message = f"openspec {invocation} did not finish within {seconds:g}s and was stopped"
+        super().__init__(message)
+
+
 class OpenSpecCli(Protocol):
     """The OpenSpec command line, which is where canonical state comes from.
 
