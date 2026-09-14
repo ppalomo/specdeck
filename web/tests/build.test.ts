@@ -55,3 +55,47 @@ describe('what the page fetches', () => {
     }
   })
 })
+
+describe('movement', () => {
+  it('is asked for in the range the system allows and no wider', () => {
+    expect(css).toContain('--duration-quick: 150ms')
+    expect(css).toContain('--duration-settled: 250ms')
+  })
+
+  it('disappears entirely for anyone whose system asks for less of it', () => {
+    const reduced = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{([^]*?)\n {2}\}/.exec(css)
+
+    expect(reduced).not.toBeNull()
+    // Not shortened. A quick transition is still a transition, and the setting is not a
+    // request for a brisker animation.
+    expect(reduced?.[1]).toContain('transition-duration: 0.01ms !important')
+    expect(reduced?.[1]).toContain('animation-duration: 0.01ms !important')
+  })
+})
+
+describe('the classes the interface relies on', () => {
+  it('are written out, because Tailwind only emits what it can read', () => {
+    // A name assembled at runtime is never read, so the class is never emitted and the
+    // element renders with nothing: no error, no warning, just a blank where a colour was.
+    // This caught eight blank accent swatches that every other test was happy with.
+    const source = readdirSync(resolve(web, 'src'), { recursive: true, encoding: 'utf8' })
+      .filter((name) => name.endsWith('.ts') || name.endsWith('.tsx'))
+      .map((name) => readFileSync(resolve(web, 'src', name), 'utf8'))
+      .join('\n')
+
+    for (const layer of ['base', 'surface', 'raised']) expect(source).toContain(`bg-${layer}`)
+    for (let accent = 1; accent <= 8; accent += 1) expect(source).toContain(`bg-accent-${accent}`)
+    for (const text of ['text', 'muted', 'faint']) expect(source).toContain(`text-${text}`)
+  })
+
+  it('has no class name stitched together from a value', () => {
+    // The tests are left out: they assert *about* class names, which reads the same to a
+    // regular expression and is the opposite of the mistake being looked for.
+    const source = readdirSync(resolve(web, 'src'), { recursive: true, encoding: 'utf8' })
+      .filter((name) => name.endsWith('.tsx') && !name.includes('.test.'))
+      .map((name) => readFileSync(resolve(web, 'src', name), 'utf8'))
+      .join('\n')
+
+    expect(source).not.toMatch(/(?:bg|text|border|fill|stroke)-\$\{/)
+  })
+})

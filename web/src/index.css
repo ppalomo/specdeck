@@ -37,6 +37,12 @@
  */
 
 @theme {
+  /* -------------------------------------------------------------- spacing */
+  /* One pixel per unit, so `gap-8` is eight pixels and the 4 px grid is something you can
+     read off the class name. Tailwind's default of 0.25rem would make `p-16` mean 64px,
+     which is how a grid quietly stops being one. */
+  --spacing: 1px;
+
   /* ---------------------------------------------------------------- type */
   --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
