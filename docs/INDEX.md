@@ -1,7 +1,7 @@
 ---
 title: Documentation index
 description: One line per document, and where each kind of knowledge belongs.
-updated: 2026-09-13
+updated: 2026-09-14
 ---
 
 # Documentation index
@@ -27,7 +27,7 @@ updated: 2026-09-13
 
 | Document | What it is |
 |---|---|
-| [../AGENTS.md](../AGENTS.md) | The only source of working instructions: language, stack, the hard rules, what is out of scope for V1, and how a change is carried out. |
+| [../AGENTS.md](../AGENTS.md) | The only source of working instructions: language, stack, what exists and the four commands that drive it, the hard rules, what is out of scope for V1, and how a change is carried out. |
 | [../CLAUDE.md](../CLAUDE.md) | One line, importing `AGENTS.md`, so Claude Code and any other agent read the same file. |
 
 ## Where each kind of knowledge belongs

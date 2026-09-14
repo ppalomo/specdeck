@@ -43,9 +43,8 @@ services:
       - server
     volumes:
       - ./web:/app/web
-      # Linux binaries and build caches that must not come from the host.
+      # Linux binaries that must not come from the host.
       - /app/web/node_modules
-      - /app/web/dist
     environment:
       # A bind mount from macOS does not deliver filesystem events, so the watcher polls.
       VITE_POLL: 'true'

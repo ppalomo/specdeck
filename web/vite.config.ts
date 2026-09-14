@@ -7,6 +7,14 @@ const SERVER = 'http://127.0.0.1:4820'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    // The compiled interface lands inside the Python package, which is what makes the
+    // built wheel carry it and the server able to serve it with no Node process around.
+    // `emptyOutDir` has to be said out loud because the directory is outside Vite's root:
+    // without it Vite refuses to clear it and stale files from an earlier build survive.
+    outDir: '../src/specdeck/static',
+    emptyOutDir: true,
+  },
   server: {
     // The same loopback the server listens on, so what is printed is what is
     // reachable and nothing of Specdeck is exposed to the network.

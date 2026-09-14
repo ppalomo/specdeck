@@ -8,7 +8,7 @@ import tseslint from 'typescript-eslint'
 // and anything that would break the dev server's fast refresh.
 export default tseslint.config(
   // The generated contract is not ours to style; it is regenerated, never edited.
-  { ignores: ['dist', 'src/api/schema.d.ts'] },
+  { ignores: ['src/api/schema.d.ts'] },
   js.configs.recommended,
   {
     // The typed rules need a program, so they only apply to what a tsconfig includes.
