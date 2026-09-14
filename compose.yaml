@@ -21,6 +21,9 @@ services:
       - '127.0.0.1:4821:4821'
     volumes:
       - ./src:/app/src:ro
+    # The same reloading server `make dev` runs, so server code is picked up without
+    # recreating anything.
+    command: ['uv', 'run', '--no-sync', 'specdeck', 'serve', '--reload']
 
   web:
     build:
@@ -29,13 +32,12 @@ services:
     # One network namespace for the two containers. The server keeps listening only on
     # 127.0.0.1, as it must, and Vite still reaches it there.
     #
-    # The price of sharing it: this container is bound to the namespace the server had when
-    # it was created, so restarting the server alone leaves the client talking to a dead
-    # one. After changing server code, recreate both:
+    # The price of sharing it: this container is bound to the namespace the server had
+    # when it was created, so restarting the server alone leaves the client talking to a
+    # dead one. Neither side needs restarting for a code change — both reload — but if the
+    # server ever has to, recreate the two together:
     #
     #     docker compose up -d --force-recreate
-    #
-    # Client code needs none of that; the bind mount below is watched live.
     network_mode: service:server
     depends_on:
       - server
