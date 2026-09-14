@@ -7,7 +7,8 @@ import tseslint from 'typescript-eslint'
 // What the type checker cannot catch: hook rules, unsound escapes from the type system,
 // and anything that would break the dev server's fast refresh.
 export default tseslint.config(
-  { ignores: ['dist'] },
+  // The generated contract is not ours to style; it is regenerated, never edited.
+  { ignores: ['dist', 'src/api/schema.d.ts'] },
   js.configs.recommended,
   {
     // The typed rules need a program, so they only apply to what a tsconfig includes.
