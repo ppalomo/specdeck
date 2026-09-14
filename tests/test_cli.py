@@ -4,6 +4,8 @@ import json
 import socket
 from importlib.metadata import version
 
+import typer
+import typer.core
 from typer.testing import CliRunner
 
 from specdeck.cli import HOST, PORT, app
@@ -42,7 +44,12 @@ def test_serve_fails_naming_the_port_when_it_is_taken() -> None:
 
 
 def test_serve_offers_a_reload_flag_for_development() -> None:
-    result = runner.invoke(app, ["serve", "--help"])
+    # Asked of the command itself rather than of its help text, which rich colours when it
+    # believes it is on a terminal, splitting the flag across escape codes. Typer carries
+    # its own click, so the group is Typer's, not the one click installs.
+    command = typer.main.get_command(app)
+    assert isinstance(command, typer.core.TyperGroup)
 
-    assert result.exit_code == 0
-    assert "--reload" in result.output
+    flags = [flag for parameter in command.commands["serve"].params for flag in parameter.opts]
+
+    assert "--reload" in flags
