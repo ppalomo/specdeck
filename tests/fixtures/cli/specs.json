@@ -1,0 +1,16 @@
+{
+  "specs": [
+    {
+      "id": "reports",
+      "requirementCount": 1
+    },
+    {
+      "id": "task-management",
+      "requirementCount": 2
+    }
+  ],
+  "root": {
+    "path": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+    "source": "nearest"
+  }
+}

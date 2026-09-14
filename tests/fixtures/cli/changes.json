@@ -1,0 +1,22 @@
+{
+  "changes": [
+    {
+      "name": "retire-old-reports",
+      "completedTasks": 2,
+      "totalTasks": 3,
+      "lastModified": "2026-09-14T08:27:00.069Z",
+      "status": "in-progress"
+    },
+    {
+      "name": "add-reminders",
+      "completedTasks": 1,
+      "totalTasks": 4,
+      "lastModified": "2026-09-14T08:26:46.215Z",
+      "status": "in-progress"
+    }
+  ],
+  "root": {
+    "path": "/Users/ppalomo/Developer/specdeck/tests/fixtures/roots/full",
+    "source": "nearest"
+  }
+}

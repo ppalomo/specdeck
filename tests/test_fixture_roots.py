@@ -61,6 +61,6 @@ def test_the_broken_root_is_broken_in_both_ways(broken_root: Path) -> None:
     assert "\t" in (broken_root / "openspec/config.yaml").read_text()
 
 
-def test_the_directory_that_is_not_a_root_has_no_openspec(not_a_root: Path) -> None:
-    assert not_a_root.is_dir()
-    assert not (not_a_root / "openspec").exists()
+def test_the_directory_that_is_not_a_root_has_no_openspec(not_a_root_dir: Path) -> None:
+    assert not_a_root_dir.is_dir()
+    assert not (not_a_root_dir / "openspec").exists()

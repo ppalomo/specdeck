@@ -52,12 +52,12 @@ def test_two_roots_of_the_same_name_do_not_collide(registry: Registry, tmp_path:
 
 
 def test_a_path_that_is_not_a_root_is_refused_saying_what_was_looked_for(
-    registry: Registry, not_a_root: Path
+    registry: Registry, not_a_root_dir: Path
 ) -> None:
     with pytest.raises(NotAnOpenSpecRootError) as refused:
-        registry.add(not_a_root)
+        registry.add(not_a_root_dir)
 
-    assert str(not_a_root.resolve()) in str(refused.value)
+    assert str(not_a_root_dir.resolve()) in str(refused.value)
     assert "openspec/config.yaml" in str(refused.value)
     assert registry.repos() == ()
 

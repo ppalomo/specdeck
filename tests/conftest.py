@@ -57,6 +57,6 @@ def broken_root() -> Path:
 
 
 @pytest.fixture
-def not_a_root() -> Path:
+def not_a_root_dir() -> Path:
     """An ordinary directory with no `openspec/`. Registering it has to be refused."""
     return ROOTS / "not-a-root"

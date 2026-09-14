@@ -1,0 +1,46 @@
+{
+  "items": [
+    {
+      "id": "no-scenarios",
+      "type": "change",
+      "valid": false,
+      "issues": [
+        {
+          "level": "WARNING",
+          "path": "board/spec.md",
+          "message": "ADDED \"Una columna DEBE tener nombre\" should contain SHALL or MUST (RFC 2119 best practice for English specs)"
+        },
+        {
+          "level": "ERROR",
+          "path": "board/spec.md",
+          "message": "ADDED \"Una columna DEBE tener nombre\" must include at least one scenario"
+        }
+      ],
+      "durationMs": 10
+    }
+  ],
+  "summary": {
+    "totals": {
+      "items": 1,
+      "passed": 0,
+      "failed": 1
+    },
+    "byType": {
+      "change": {
+        "items": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      "spec": {
+        "items": 0,
+        "passed": 0,
+        "failed": 0
+      }
+    }
+  },
+  "version": "1.0",
+  "root": {
+    "path": "/private/tmp/claude-501/-Users-ppalomo-Developer-specdeck/e7c1f11c-13ec-4818-913f-89ba0f0e1313/scratchpad/invalid-root",
+    "source": "nearest"
+  }
+}
