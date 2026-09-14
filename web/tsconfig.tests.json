@@ -1,0 +1,34 @@
+{
+  // The suite under `tests/` reads the repository from disk — the stylesheet's palette, the
+  // built page's dependencies — so it needs Node's types, which the interface deliberately
+  // does not have. It sees `src` too, because that is what it is testing. The result is that
+  // the interface is checked twice: once without Node available, which is what stops an
+  // accidental `node:fs` reaching the browser, and once with, here.
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tests.tsbuildinfo",
+
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "types": ["node"],
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["tests", "src"]
+}

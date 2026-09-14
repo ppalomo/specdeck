@@ -1,1 +1,203 @@
 @import 'tailwindcss';
+
+/*
+ * The fonts, from the bundle and never from a network.
+ *
+ * Specdeck is a local tool that has to work with no connection. A font fetched over the wire
+ * either delays the first paint or changes the letters under someone halfway through reading,
+ * and both are a poor price for a cosmetic dependency. `swap` so that if anything ever did go
+ * wrong, there is text rather than a blank page.
+ */
+@font-face {
+  font-family: 'Geist';
+  src: url('./fonts/Geist-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMono-Variable.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * Specdeck's design tokens.
+ *
+ * Everything visual is decided here and called by name elsewhere. A screen that reaches for
+ * a raw colour or an off-grid spacing is a decision nobody took, and those are what make two
+ * screens written months apart fail to look like the same product.
+ *
+ * Tailwind v4 is configured in CSS, so these are variables rather than a JavaScript object —
+ * which is also what lets the theme be a redefinition of the same names instead of a second
+ * set of classes.
+ */
+
+@theme {
+  /* ---------------------------------------------------------------- type */
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Five sizes. There is no sixth: a size outside this scale is a decision nobody took. */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.75rem;
+  --text-xl--line-height: 2.25rem;
+
+  /* --------------------------------------------------------------- shape */
+  /* Three radii, by the size of the thing: a control, a card, a panel. */
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-panel: 16px;
+
+  /* Depth without hard edges. A screen of twenty outlined boxes is a grid where nothing
+     stands out, which is the opposite of what a dashboard is for. */
+  --shadow-surface: 0 1px 2px oklch(0% 0 0 / 0.24);
+  --shadow-raised: 0 4px 16px oklch(0% 0 0 / 0.28);
+
+  /* ------------------------------------------------------------- motion */
+  --duration-quick: 150ms;
+  --duration-settled: 250ms;
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/*
+ * The layers, the neutrals and the meanings. Declared on :root rather than in @theme so the
+ * light theme can redefine exactly these names and nothing else changes.
+ *
+ * Dark is the default: not the absence of a choice, but the one Specdeck is designed in.
+ */
+@layer base {
+  :root {
+    /* Three layers, told apart by luminosity and a soft shadow. */
+    --colour-base: oklch(18% 0.012 255);
+    --colour-surface: oklch(22% 0.013 255);
+    --colour-raised: oklch(26% 0.014 255);
+    --colour-line: oklch(32% 0.014 255);
+
+    /* Cool neutrals, from what is read most to what is read least. */
+    --colour-text: oklch(96% 0.005 255);
+    --colour-muted: oklch(76% 0.012 255);
+    --colour-faint: oklch(67% 0.012 255);
+
+    /* Fixed meanings. These four are the operations a delta may declare, and they are not
+       reused for anything else anywhere in the interface. */
+    --colour-added: oklch(80% 0.16 150);
+    --colour-modified: oklch(83% 0.15 85);
+    --colour-removed: oklch(74% 0.17 25);
+    --colour-renamed: oklch(78% 0.13 250);
+
+    /* The states an artifact may be in. `ready` takes the repository's accent. */
+    --colour-done: var(--colour-added);
+    --colour-ready: var(--colour-accent);
+    --colour-blocked: oklch(70% 0.012 255);
+    --colour-skipped: oklch(64% 0.01 255);
+
+    /* Eight accents, harmonised with each other: one per registered repository, so a card,
+       its progress ring and its headers are tinted by whose they are. */
+    --colour-accent-1: oklch(78% 0.13 250);
+    --colour-accent-2: oklch(80% 0.14 190);
+    --colour-accent-3: oklch(80% 0.15 150);
+    --colour-accent-4: oklch(84% 0.14 115);
+    --colour-accent-5: oklch(84% 0.14 85);
+    --colour-accent-6: oklch(78% 0.15 45);
+    --colour-accent-7: oklch(76% 0.16 15);
+    --colour-accent-8: oklch(78% 0.15 310);
+    --colour-accent: var(--colour-accent-1);
+  }
+
+  :root[data-theme='light'] {
+    --colour-base: oklch(97% 0.004 255);
+    --colour-surface: oklch(99.5% 0.002 255);
+    --colour-raised: oklch(100% 0 0);
+    --colour-line: oklch(90% 0.006 255);
+
+    --colour-text: oklch(24% 0.012 255);
+    --colour-muted: oklch(42% 0.014 255);
+    --colour-faint: oklch(52% 0.014 255);
+
+    --colour-added: oklch(48% 0.14 150);
+    --colour-modified: oklch(50% 0.12 75);
+    --colour-removed: oklch(50% 0.18 25);
+    --colour-renamed: oklch(48% 0.15 255);
+
+    --colour-blocked: oklch(46% 0.012 255);
+    --colour-skipped: oklch(51% 0.01 255);
+
+    --colour-accent-1: oklch(48% 0.15 255);
+    --colour-accent-2: oklch(46% 0.11 200);
+    --colour-accent-3: oklch(46% 0.13 150);
+    --colour-accent-4: oklch(46% 0.13 120);
+    --colour-accent-5: oklch(48% 0.12 80);
+    --colour-accent-6: oklch(50% 0.15 45);
+    --colour-accent-7: oklch(50% 0.17 15);
+    --colour-accent-8: oklch(48% 0.16 310);
+
+    --shadow-surface: 0 1px 2px oklch(50% 0.01 255 / 0.1);
+    --shadow-raised: 0 4px 16px oklch(50% 0.01 255 / 0.12);
+  }
+
+  body {
+    background-color: var(--colour-base);
+    color: var(--colour-text);
+    font-family: var(--font-sans);
+    /* No view scrolls sideways. Specdeck is a desktop panel, and a horizontal scrollbar is
+       always a layout that gave up. */
+    overflow-x: hidden;
+  }
+
+  /* Asked for less movement means none, not less: a shortened transition is still motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/*
+ * The token names, exposed to Tailwind so `bg-surface`, `text-muted` and `border-line` work.
+ * Declared after the light theme so both resolve through the same variables.
+ */
+@theme inline {
+  --color-base: var(--colour-base);
+  --color-surface: var(--colour-surface);
+  --color-raised: var(--colour-raised);
+  --color-line: var(--colour-line);
+
+  --color-text: var(--colour-text);
+  --color-muted: var(--colour-muted);
+  --color-faint: var(--colour-faint);
+
+  --color-added: var(--colour-added);
+  --color-modified: var(--colour-modified);
+  --color-removed: var(--colour-removed);
+  --color-renamed: var(--colour-renamed);
+
+  --color-done: var(--colour-done);
+  --color-ready: var(--colour-ready);
+  --color-blocked: var(--colour-blocked);
+  --color-skipped: var(--colour-skipped);
+
+  --color-accent: var(--colour-accent);
+  --color-accent-1: var(--colour-accent-1);
+  --color-accent-2: var(--colour-accent-2);
+  --color-accent-3: var(--colour-accent-3);
+  --color-accent-4: var(--colour-accent-4);
+  --color-accent-5: var(--colour-accent-5);
+  --color-accent-6: var(--colour-accent-6);
+  --color-accent-7: var(--colour-accent-7);
+  --color-accent-8: var(--colour-accent-8);
+}
