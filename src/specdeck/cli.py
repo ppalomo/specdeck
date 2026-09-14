@@ -1,5 +1,6 @@
 """The `specdeck` executable: how the server is started and what it can tell about itself."""
 
+import asyncio
 import json
 import socket
 from pathlib import Path
@@ -10,6 +11,8 @@ import uvicorn
 from uvicorn.supervisors import ChangeReload
 
 from specdeck.api.app import create_app
+from specdeck.api.dependencies import Services
+from specdeck.application.registry import NotAnOpenSpecRootError, NotRegisteredError
 from specdeck.domain.product import product_version
 
 HOST = "127.0.0.1"
@@ -99,3 +102,61 @@ def serve(
 def openapi() -> None:
     """Write the OpenAPI document to standard output, without listening anywhere."""
     typer.echo(json.dumps(create_app().openapi(), indent=2, sort_keys=True))
+
+
+@app.command(name="add")
+def add(path: Annotated[Path, typer.Argument(help="Directory holding an openspec/.")]) -> None:
+    """Register a repository so Specdeck reads it."""
+    try:
+        repo = Services.real().registry.add(path)
+    except NotAnOpenSpecRootError as refused:
+        typer.echo(str(refused), err=True)
+        raise typer.Exit(code=1) from refused
+
+    typer.echo(f"Registered {repo.name} as {repo.id} ({repo.kind}) at {repo.path}")
+
+
+@app.command(name="remove")
+def remove(repo_id: Annotated[str, typer.Argument(help="Identifier shown by `list`.")]) -> None:
+    """Stop reading a repository. Nothing inside it is touched."""
+    try:
+        repo = Services.real().registry.remove(repo_id)
+    except NotRegisteredError as unknown:
+        typer.echo(str(unknown), err=True)
+        raise typer.Exit(code=1) from unknown
+
+    typer.echo(f"Removed {repo.name} ({repo.id}). {repo.path} was not touched.")
+
+
+@app.command(name="list")
+def listing() -> None:
+    """Show every registered repository, and say which ones cannot be read."""
+    repos = Services.real().registry.repos()
+    if not repos:
+        typer.echo("Nothing registered yet. Add a repository with: specdeck add <path>")
+        return
+
+    for repo in repos:
+        gone = repo.availability
+        state = "" if gone.available else f"  — unavailable: {gone.reason}"
+        typer.echo(f"{repo.id}  {repo.kind:5}  {repo.path}{state}")
+
+
+@app.command(name="read")
+def read(repo_id: Annotated[str, typer.Argument(help="Identifier shown by `list`.")]) -> None:
+    """Read a registered repository now and report what was found in it."""
+    wired = Services.real()
+    try:
+        index = asyncio.run(wired.indexes.rebuild(repo_id))
+    except NotRegisteredError as unknown:
+        typer.echo(str(unknown), err=True)
+        raise typer.Exit(code=1) from unknown
+
+    asked = index.canonical
+    canonical = "" if asked.available else f", canonical state: {asked.reason}"
+    typer.echo(
+        f"{index.repo.name}: {len(index.changes)} active, {len(index.archived)} archived, "
+        f"{len(index.specs)} capabilities{canonical}"
+    )
+    for unread in index.unreadable:
+        typer.echo(f"  could not read {unread.file}: {unread.reason}", err=True)

@@ -20,9 +20,14 @@ class JsonRegistryStore:
     when something goes wrong, and it fits on a screen.
     """
 
-    def __init__(self, path: Path = DEFAULT_PATH) -> None:
-        """Keep the registry at the given path, the user's configuration by default."""
-        self.path = path
+    def __init__(self, path: Path | None = None) -> None:
+        """Keep the registry at the given path, the user's configuration by default.
+
+        The default is read here rather than bound to the signature, so that a test can
+        point the whole product at a registry of its own without going near the one
+        belonging to whoever is running it.
+        """
+        self.path = path if path is not None else DEFAULT_PATH
 
     def load(self) -> tuple[Repo, ...]:
         """Read the registered roots. An absent store reads as none registered."""
