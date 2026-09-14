@@ -39,3 +39,10 @@ def test_serve_fails_naming_the_port_when_it_is_taken() -> None:
     assert result.exit_code == 1
     assert str(PORT) in result.output
     assert "different port" in result.output
+
+
+def test_serve_offers_a_reload_flag_for_development() -> None:
+    result = runner.invoke(app, ["serve", "--help"])
+
+    assert result.exit_code == 0
+    assert "--reload" in result.output

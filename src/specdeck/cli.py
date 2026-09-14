@@ -2,15 +2,22 @@
 
 import json
 import socket
+from pathlib import Path
 from typing import Annotated
 
 import typer
 import uvicorn
+from uvicorn.supervisors import ChangeReload
 
 from specdeck.app import create_app, product_version
 
 HOST = "127.0.0.1"
 PORT = 4820
+
+# The import string uvicorn needs to build the application again after a reload, and
+# the directory whose changes are worth reloading for.
+APP = "specdeck.app:app"
+SOURCE = Path(__file__).parent
 
 app = typer.Typer(
     help="Specdeck — a local dashboard over the OpenSpec directories of several repositories.",
@@ -59,10 +66,30 @@ def _listening_socket(host: str, port: int) -> socket.socket:
 
 
 @app.command()
-def serve() -> None:
+def serve(
+    *,
+    reload: Annotated[
+        bool,
+        typer.Option(
+            "--reload",
+            help="Restart the server when its own code changes. For development.",
+        ),
+    ] = False,
+) -> None:
     """Start the server on the local loopback."""
     sock = _listening_socket(HOST, PORT)
     typer.echo(f"Specdeck is listening on http://{HOST}:{PORT}")
+
+    if reload:
+        # Reloading means building the application again in a fresh process, so uvicorn is
+        # given the import string rather than the object. The port stays ours: the socket
+        # bound above is what the reloaded processes inherit.
+        config = uvicorn.Config(
+            app=APP, host=HOST, port=PORT, reload=True, reload_dirs=[str(SOURCE)]
+        )
+        ChangeReload(config, target=uvicorn.Server(config).run, sockets=[sock]).run()
+        return
+
     server = uvicorn.Server(uvicorn.Config(app=create_app(), host=HOST, port=PORT))
     server.run(sockets=[sock])
 
