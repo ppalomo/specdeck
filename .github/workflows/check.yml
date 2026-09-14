@@ -17,16 +17,18 @@ concurrency:
 permissions:
   contents: read
 
+# The actions are pinned to exact releases rather than to a floating major: uv's action
+# does not publish one past v7, and a run that changes under you is not a check.
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
 
       # The interpreter and the packages both come from uv.lock, so the runner resolves
       # nothing on its own.
       - name: Install uv
-        uses: astral-sh/setup-uv@v10
+        uses: astral-sh/setup-uv@v10.1.0
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -34,12 +36,12 @@ jobs:
       # The version comes from the client's packageManager field, which is where the
       # repository already pins it.
       - name: Install pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v6.1.0
         with:
           package_json_file: web/package.json
 
       - name: Install Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v7.0.0
         with:
           node-version: 22
           cache: pnpm
